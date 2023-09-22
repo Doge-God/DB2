@@ -4,7 +4,7 @@ import asyncio
 from discord.ext import commands
 from dotenv import load_dotenv
 import domain.data_manager as data_manager
-from helpers import check_vc_command, VC_STATE
+from common import check_vc_command, VC_STATE, join_voice_chan, disconnect_voice_chan
 
 intents = discord.Intents.all()
 intents.message_content = True
@@ -36,34 +36,15 @@ async def on_ready():
 
 @client.command()
 async def join(ctx:commands.Context):
-    match check_vc_command(ctx):
-        case VC_STATE.USER_NOT_IN_VC:
-            await ctx.send("Join VC for VC command.")
-        case VC_STATE.BOT_NOT_IN_SERVER:
-            new_vc_client = await ctx.message.author.voice.channel.connect()
-            data_manager.get_data(ctx).vc_client = new_vc_client
-            print("Joind vc, session ID: " + new_vc_client.session_id)
-        case VC_STATE.BOT_NOT_IN_CHANNEL:
-            await data_manager.get_data(ctx).vc_client.move_to(ctx.author.voice.channel)
+    await join_voice_chan(ctx)
 
 @client.command()
 async def dc(ctx:commands.Context):
-    match check_vc_command(ctx):
-        case VC_STATE.USER_NOT_IN_VC:
-            await ctx.send("Join voice channel for voice channel commands.")
-        case VC_STATE.BOT_NOT_IN_SERVER:
-            await ctx.send("DB2 not in vc in this server.")
-        case VC_STATE.BOT_NOT_IN_CHANNEL:
-            await ctx.send("DB2 not in this channel.")
-        case VC_STATE.SAME_SERVER_CHANNEL:
-            server_data = data_manager.get_data(ctx)
-            await server_data.vc_client.disconnect()
-            server_data.vc_client = None
-            server_data.song_queue = []
+    await disconnect_voice_chan(ctx)
     
-
 async def main():
-    await load_cogs()
-    await client.start(DISCORD_TOKEN)
+    async with client:
+        await load_cogs()
+        await client.start(DISCORD_TOKEN)
 
 asyncio.run(main())

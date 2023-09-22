@@ -1,12 +1,19 @@
-import typing
+from typing import List
 from discord.ext import commands
 from discord import VoiceClient
 
 class ServerData():
     def __init__(self):
         self.vc_client : VoiceClient = None
-        self.song_queue = []
+        self.song_queue : List[SongInfo] = []
         self.ai_context = []
+
+class SongInfo():
+    def __init__(self, source:str, title:str, duration:int, seek_sec:int=0):
+        self.source = source
+        self.title = title
+        self.duration = duration
+        self.seek_sec = seek_sec
 
 server_datas = {}
 
