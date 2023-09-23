@@ -33,6 +33,12 @@ async def on_ready():
         data_manager.add_server_data(guild.id)
     print("Complete")
 
+@client.event
+async def on_voice_state_update(member:discord.Member, before:discord.VoiceState, after:discord.VoiceState):
+   if len(before.channel.members) <= 1:
+        await data_manager.get_data(before.channel.guild.id).vc_client.disconnect()
+        data_manager.get_data(before.channel.guild.id).vc_client = None
+
 
 @client.command()
 async def join(ctx:commands.Context):

@@ -84,10 +84,6 @@ class music(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("Loaded music cog ... Complete")
-
-    @commands.command()
-    async def ping(self,ctx):
-        await ctx.send("pong")
     
     @commands.command()
     async def play(self,ctx:commands.Context, *phrases):
@@ -97,10 +93,8 @@ class music(commands.Cog):
                 return
             case VC_STATE.BOT_NOT_IN_SERVER:
                 await join_voice_chan(ctx)
-                return
             case VC_STATE.BOT_NOT_IN_CHANNEL:
                 await join_voice_chan(ctx)
-                return
             case VC_STATE.SAME_SERVER_CHANNEL:
                 pass
 
@@ -171,7 +165,7 @@ class music(commands.Cog):
         else:
             await ctx.send(embed=discord.Embed(title="Invalid skip location.",color=discord.Color.red()))
 
-    @commands.command()
+    @commands.command(aliases=['q'])
     async def queue(self,ctx:commands.Context):
         match check_vc_command(ctx):
             case VC_STATE.USER_NOT_IN_VC:
@@ -202,6 +196,9 @@ class music(commands.Cog):
                 cnt += 1
             await ctx.send(embed=embed_obj)
 
+    @commands.command()
+    async def seek(self, ctx:commands.Context):
+        pass
 
         
 
