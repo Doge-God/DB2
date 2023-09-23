@@ -3,3 +3,5 @@ key.txt
 /src/__pycache__/
 /env
 .env
+__pycache__/
+cogs/__pycache__/music.cpython-310.pyc
